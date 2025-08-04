@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -13,9 +13,10 @@
   />
   <style>
     .video-container {
-      width: 700px;
-      height: 438px;
       position: relative;
+      width: 90vw;          /* lebar relatif terhadap layar */
+      max-width: 700px;     /* maksimal di desktop */
+      aspect-ratio: 16/9;   /* menjaga proporsi video */
       overflow: hidden;
       border-radius: 12px;
       background-color: #05C8F7;
@@ -31,8 +32,10 @@
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 10;
-      width: 100px;
-      height: 100px;
+      width: 18vw;               /* responsif */
+      height: 18vw;
+      max-width: 100px;          /* batas maksimum */
+      max-height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -52,25 +55,27 @@
       transform: translate(-50%, -50%) scale(0.95);
     }
     .play-button i {
-      font-size: 2.5rem;
+      font-size: 6vw;       /* responsif juga */
+      max-font-size: 2.5rem;
       color: black;
     }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen" style="background-color:#05C8F7;">
+<body class="flex items-center justify-center min-h-screen bg-[#05C8F7]">
 
   <div class="video-container">
-    <video autoplay muted loop>
+    <video autoplay muted loop playsinline>
       <source src="index.mp4" type="video/mp4" />
       Browser Anda tidak mendukung video.
     </video>
 
+    <!-- Tombol hanya untuk pindah halaman -->
     <button type="button" class="play-button" id="playBtn" aria-label="Play">
       <i class="fas fa-play"></i>
     </button>
   </div>
 
-  <audio id="bgMusic" autoplay loop muted>
+  <audio id="bgMusic" autoplay loop muted playsinline>
     <source src="backsound01.mp3" type="audio/mpeg" />
     Browser Anda tidak mendukung audio.
   </audio>
@@ -79,38 +84,41 @@
     const playBtn = document.getElementById('playBtn');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Cek apakah user pernah izinkan musik
-    const musicAllowed = localStorage.getItem('musicAllowed') === 'true';
-    if (musicAllowed) {
-      bgMusic.muted = false;
-      bgMusic.play().catch(() => {});
-    }
-
-    // Tombol Play manual
+    // Tombol play hanya untuk pindah halaman
     playBtn.addEventListener('click', () => {
-      bgMusic.muted = false;
-      bgMusic.play();
-      localStorage.setItem('musicAllowed', 'true'); // simpan izin user
       window.location.href = 'halaman2.html';
     });
 
-    // Trik auto-unmute untuk PWA / user gerak
-    function enableAudio() {
-      if (!musicAllowed) {
-        bgMusic.muted = false;
-        bgMusic.play().catch(() => {});
-        localStorage.setItem('musicAllowed', 'true');
-      }
-      document.removeEventListener('mousemove', enableAudio);
-      document.removeEventListener('touchstart', enableAudio);
-      document.removeEventListener('scroll', enableAudio);
+    // ====== AUTOPLAY PWA TRICK ======
+    const musicAllowed = localStorage.getItem('musicAllowed') === 'true';
+
+    function startMusic() {
+      bgMusic.muted = false;
+      bgMusic.play().catch(() => {});
+      localStorage.setItem('musicAllowed', 'true');
     }
 
-    document.addEventListener('mousemove', enableAudio);
-    document.addEventListener('touchstart', enableAudio);
-    document.addEventListener('scroll', enableAudio);
+    // Jika user sudah pernah izinkan, langsung nyalakan
+    if (musicAllowed) {
+      startMusic();
+    } else {
+      // Trik silent-start PWA
+      window.addEventListener('load', () => {
+        bgMusic.play().then(() => {
+          setTimeout(() => {
+            startMusic();
+          }, 200);
+        }).catch(() => {
+          // Fallback untuk browser biasa
+          document.addEventListener('touchstart', startMusic, {once:true});
+          document.addEventListener('pointerdown', startMusic, {once:true});
+          document.addEventListener('click', startMusic, {once:true});
+          document.addEventListener('scroll', startMusic, {once:true});
+        });
+      });
+    }
 
-    // Daftarkan service worker untuk PWA
+    // Register service worker untuk PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
         .then(() => console.log('Service Worker Registered'));
