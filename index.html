@@ -12,29 +12,40 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
   />
   <style>
+    body {
+      background-color: #05C8F7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
     .video-container {
       position: relative;
-      width: 90vw;          /* lebar relatif terhadap layar */
-      max-width: 700px;     /* maksimal di desktop */
-      aspect-ratio: 16/9;   /* menjaga proporsi video */
+      width: 90vw;
+      max-width: 700px;
+      aspect-ratio: 16/9;
+      max-height: 80vh; /* biar tidak terlalu tinggi di portrait */
       overflow: hidden;
       border-radius: 12px;
       background-color: #05C8F7;
     }
+
     .video-container video {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .play-button {
       position: absolute;
       top: 70%;
       left: 50%;
       transform: translate(-50%, -50%);
       z-index: 10;
-      width: 18vw;               /* responsif */
+      width: 18vw;
       height: 18vw;
-      max-width: 100px;          /* batas maksimum */
+      max-width: 100px;
       max-height: 100px;
       display: flex;
       align-items: center;
@@ -46,22 +57,31 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       transition: all 0.3s ease;
     }
-    .play-button:hover {
-      background-color: rgba(243, 243, 243, 0.6);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-      transform: translate(-50%, -50%) scale(1.05);
-    }
-    .play-button:active {
-      transform: translate(-50%, -50%) scale(0.95);
-    }
+
     .play-button i {
-      font-size: 6vw;       /* responsif juga */
-      max-font-size: 2.5rem;
+      font-size: 6vw;
       color: black;
+    }
+
+    /* Responsif di HP Portrait */
+    @media (max-aspect-ratio: 3/4) {
+      .video-container {
+        width: 95vw;
+        aspect-ratio: auto;
+        height: 50vh; /* biar muat di layar portrait */
+      }
+      .play-button {
+        top: 60%; /* tombol lebih rendah */
+        width: 20vw;
+        height: 20vw;
+      }
+      .play-button i {
+        font-size: 8vw;
+      }
     }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen bg-[#05C8F7]">
+<body>
 
   <div class="video-container">
     <video autoplay muted loop playsinline>
@@ -84,12 +104,11 @@
     const playBtn = document.getElementById('playBtn');
     const bgMusic = document.getElementById('bgMusic');
 
-    // Tombol play hanya untuk pindah halaman
     playBtn.addEventListener('click', () => {
       window.location.href = 'halaman2.html';
     });
 
-    // ====== AUTOPLAY PWA TRICK ======
+    // AUTOPLAY PWA TRICK
     const musicAllowed = localStorage.getItem('musicAllowed') === 'true';
 
     function startMusic() {
@@ -98,18 +117,13 @@
       localStorage.setItem('musicAllowed', 'true');
     }
 
-    // Jika user sudah pernah izinkan, langsung nyalakan
     if (musicAllowed) {
       startMusic();
     } else {
-      // Trik silent-start PWA
       window.addEventListener('load', () => {
         bgMusic.play().then(() => {
-          setTimeout(() => {
-            startMusic();
-          }, 200);
+          setTimeout(() => { startMusic(); }, 200);
         }).catch(() => {
-          // Fallback untuk browser biasa
           document.addEventListener('touchstart', startMusic, {once:true});
           document.addEventListener('pointerdown', startMusic, {once:true});
           document.addEventListener('click', startMusic, {once:true});
@@ -118,7 +132,6 @@
       });
     }
 
-    // Register service worker untuk PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
         .then(() => console.log('Service Worker Registered'));
