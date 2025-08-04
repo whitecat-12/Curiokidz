@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Thinker Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Pusatkan secara vertikal */
+            align-items: center; /* Pusatkan secara horizontal */
+            background: url('spacebackground.png') no-repeat center center;
+            background-size: cover;
+            overflow: hidden;
+        }
+		
+        .game-container {
+            display: flex;
+			width: 495px;
+			height: 321px;
+            gap:53px;
+			background-repeat: no-repeat;
+			background-size: cover;  /* Atau gunakan contain */
+			background-size: 100% 100%;
+			background-position: center;
+        }
+
+        .grid {
+
+            display: grid;
+            grid-template-columns: repeat(4, 42px);
+            grid-template-rows: repeat(4, 42px);
+            gap: 12px;
+            position: relative;
+			transform: translateY(106.5px)translateX(13px); /* Geser gambar ke atas */
+        }
+
+        .grid div {
+			width: 50px;
+			height:50px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+			position: relative;
+			border: none; /* Hapus garis kotak hitam */
+		}
+
+		.red {
+			width: 57px;
+			height: 57px;
+			background-size: cover;
+			background-position: center;
+			border: none; /* Pastikan kotak merah tanpa border */
+		}
+
+		.neutral {
+			background-color: #DEB887; /* Warna kayu */
+			cursor: pointer;
+			font-size: 16px;
+			font-weight: bold;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border: 2px solid #8B5A2B; /* Garis coklat tua */
+			box-shadow: inset 0 0 4px rgba(0,0,0,0.2); /* Efek kedalaman */
+			border-radius: 0; /* Tidak melengkung */
+		}
+
+
+			
+	
+			#red1 { background-image: url('tugasA/image16.png'); }
+			#red2 { background-image: url('tugasA/image14.png'); }
+			#red3 { background-image: url('tugasA/image7.png'); }
+			#red4 { background-image: url('tugasA/image4.png'); }
+			#red5 { background-image: url('tugasA/image9.png'); }
+			#red6 { background-image: url('tugasA/image15.png'); }
+			#red7 { background-image: url('tugasA/image11.png'); }
+			#red8 { background-image: url('tugasA/image6.png'); }
+			#red9 { background-image: url('tugasA/image3.png'); }
+			#red10 { background-image: url('tugasA/image12.png'); }
+			#red11 { background-image: url('tugasA/image1.png'); }
+			#red12 { background-image: url('tugasA/image8.png'); }
+			#red13 { background-image: url('tugasA/image2.png'); }
+			#red14 { background-image: url('tugasA/image5.png'); }
+			#red15 { background-image: url('tugasA/image10.png'); }
+			#red16 { background-image: url('tugasA/image13.png'); }
+			
+			
+			#red17 { background-image: url('tugasA/image17.png'); }
+			#red18 { background-image: url('tugasA/image18.png'); }
+			#red19 { background-image: url('tugasA/image19.png'); }
+			#red20 { background-image: url('tugasA/image20.png'); }
+			#red21 { background-image: url('tugasA/image21.png'); }
+			#red22 { background-image: url('tugasA/image22.png'); }
+			#red23 { background-image: url('tugasA/image23.png'); }
+			#red24 { background-image: url('tugasA/image24.png'); }
+			#red25 { background-image: url('tugasA/image25.png'); }
+			#red26 { background-image: url('tugasA/image26.png'); }
+			#red27 { background-image: url('tugasA/image27.png'); }
+			#red28 { background-image: url('tugasA/image28.png'); }
+			#red29 { background-image: url('tugasA/image29.png'); }
+			#red30 { background-image: url('tugasA/image30.png'); }
+			#red31 { background-image: url('tugasA/image31.png'); }
+			#red32 { background-image: url('tugasA/image32.png'); }
+			
+		
+
+        .dragging {
+            opacity: 0.5;			
+		}
+		
+		#show-score-btn {
+		  background-image: url('score button.png');
+		  background-size: cover;
+		  background-repeat: no-repeat; 
+		  width: 80px; 
+		  height: 22px; 
+		  border: none; 
+		  cursor: pointer; 
+		  background-size: 100% 100%;
+		  background-color: transparent;
+		  transition: transform 0.3s ease;
+		  transform: translateX(7px);
+
+		  position: absolute; 
+		  top: 20px;
+		  left: 18px; 
+		}
+		
+		#show-score-btn:hover {
+		  transform: translateX(7px) scale(0.9); /* Zoom out dengan scale */
+		}
+
+		
+		#toggleAudioImg {
+			position: fixed;  /* Tetap di tempat saat scroll */
+			top: 10px;
+			left: -10px;
+			width: 30px;  /* Ukuran gambar */
+			cursor: pointer;
+			transition: transform 0.3s ease;
+			transform: translate(55px, 70px); /* Perbaikan sintaks */
+			max-width: 100%;
+		}
+
+		#toggleAudioImg:hover {
+			transform: translate(55px, 70px) scale(0.9); /* Efek hover tetap mempertahankan posisi */
+		}
+
+		/* Styling tambahan untuk body */
+		body {
+			margin: 0;
+			height: 100vh;
+			overflow: hidden; /* Mencegah scroll jika tidak diperlukan */
+		}
+		
+		.toggleNextImg2 {
+            position: fixed;  /* Tetap di tempat saat scroll */
+            top: 50px;
+            left: 25px;
+            width: 70px; 
+            cursor: pointer;
+            transition: transform 0.3s ease;
+           
+            max-width: 100%;
+        }
+
+        .toggleNextImg2:hover {
+           transform: scale(0.9);
+        }
+
+        /* Styling tambahan untuk body */
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden; /* Mencegah scroll jika tidak diperlukan */
+        }
+		
+		.toggleNextImg3 {
+            position: fixed;  /* Tetap di tempat saat scroll */
+            top: 120px;
+            left: 45px;
+            width: 28px; 
+            cursor: pointer;
+            transition: transform 0.3s ease;
+           
+            max-width: 100%;
+        }
+
+        .toggleNextImg3:hover {
+           transform: scale(0.9);
+        }
+
+        /* Styling tambahan untuk body */
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden; /* Mencegah scroll jika tidak diperlukan */
+        }
+    </style>
+		
+	</head>
+	<body>
+	
+	<a href="tugasA/contohA.html">
+        <img id="toggleNextImg3" src="contoh.png" class="toggleNextImg3">
+	
+	<a href="levelB.html">
+        <img id="toggleNextImg2" src="next button.png" class="toggleNextImg2">
+    </a>
+		
+	<img id="toggleAudioImg" src="sound button.png" alt="Play Audio">
+
+    <audio id="audio" loop>
+        <source src="sound/backsound01.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+	<button id="show-score-btn"></button>
+	
+	
+	<div class="game-container" style="background-image: url('level 1 dan 2/01.png'); background-repeat: no-repeat; padding: 10px;">
+		<div class="grid" id="leftGrid">
+			<div class="red" id="red1" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral3" ondragstart="drag(event)">1</div>
+            </div>
+            <div class="red" id="red2" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral6" ondragstart="drag(event)">2</div>
+            </div>
+            <div class="red" id="red3" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral7" ondragstart="drag(event)">3</div>
+            </div>
+            <div class="red" id="red4" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral5" ondragstart="drag(event)">4</div>
+            </div>
+            <div class="red" id="red5" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral6" ondragstart="drag(event)">5</div>
+            </div>
+            <div class="red" id="red6" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral3" ondragstart="drag(event)">6</div>
+            </div>
+            <div class="red" id="red7" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral3" ondragstart="drag(event)">7</div>
+            </div>
+            <div class="red" id="red8" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral4" ondragstart="drag(event)">8</div>
+            </div>
+            <div class="red" id="red9" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral4" ondragstart="drag(event)">9</div>
+            </div>
+            <div class="red" id="red10" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral6" ondragstart="drag(event)">10</div>
+            </div>
+            <div class="red" id="red11" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral5" ondragstart="drag(event)">11</div>
+            </div>
+            <div class="red" id="red12" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral4" ondragstart="drag(event)">12</div>
+            </div>
+            <div class="red" id="red13" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral2" ondragstart="drag(event)">13</div>
+            </div>
+            <div class="red" id="red14" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral5" ondragstart="drag(event)">14</div>
+            </div>
+            <div class="red" id="red15" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral5" ondragstart="drag(event)">15</div>
+            </div>
+            <div class="red" id="red16" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="neutral" draggable="true" id="neutral2" ondragstart="drag(event)">16</div>
+			</div>
+		</div>
+		
+		<div class="game-container">
+			<!-- Left Grid -->
+			<div class="grid" id="rightGrid">
+			<div class="red" id="red17" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red18" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red19" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red20" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red21" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red22" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red23" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red24" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red25" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red26" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red27" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red28" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red29" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red30" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red31" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="red" id="red32" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+	</div>
+
+
+
+	
+			
+
+				<script>
+	// Audio Toggle
+        const audio = document.getElementById('audio');
+        const buttonImg = document.getElementById('toggleAudioImg');
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    buttonImg.src = "sound button.png"; // Ganti gambar saat audio diputar
+                }).catch((error) => {
+                    console.error("Audio playback failed:", error);
+                });
+            } else {
+                audio.pause();
+                buttonImg.src = "sound button.png"; // Ganti gambar saat audio dihentikan
+            }
+        }
+
+        buttonImg.addEventListener('click', toggleAudio);
+		
+	   let score = 0; // Variabel untuk menyimpan skor
+
+	function updateScore(points) {
+		score += points; // Tambahkan poin ke skor
+	}
+
+	function allowDrop(event) {
+		event.preventDefault();
+	}
+
+	let draggedElement = null;
+
+	function drag(event) {
+		draggedElement = event.target;
+	}
+
+	function drop(event) {
+		event.preventDefault();
+
+		const target = event.target;
+
+		// Jika target adalah slot merah dan kosong
+		if (target.classList.contains("red") && target.childElementCount === 0) {
+			target.appendChild(draggedElement);
+
+			// Periksa jawaban
+			const correctAnswer = target.getAttribute("data-correct");
+			const draggedId = draggedElement.id;
+
+			const correctPoints = parseInt(target.getAttribute("data-correct-points")); // Poin jika benar
+			const wrongPoints = parseInt(target.getAttribute("data-wrong-points")); // Poin jika salah
+
+			// Cek apakah elemen sudah pernah ditempatkan dengan benar
+			if (target.getAttribute("validPlacement") !== "true") {
+				if (correctAnswer === draggedId) {
+					updateScore(wrongPoints); // Tambahkan poin untuk jawaban benar
+					target.setAttribute("validPlacement", "true"); // Tandai sebagai penempatan valid
+				} else {
+					// Tidak ubah poin jika salah
+					// Tambah poin untuk jawaban salah
+					target.setAttribute("validPlacement", "false"); // Tandai sebagai penempatan tidak valid
+				}
+			}
+		}
+
+		draggedElement = null; // Reset elemen yang di-drag
+	}
+
+	function returnToOriginalPosition(element) {
+		const originalParentId = element.getAttribute("data-original-parent"); // Ambil ID parent asal
+		const originalParent = document.getElementById(originalParentId); // Dapatkan elemen parent asal
+		if (originalParent) {
+			originalParent.appendChild(element); // Pindahkan kembali ke parent asal
+		}
+	}
+
+	function showFinalScore() {
+		alert(`Skor Akhir Anda: ${score}`);
+	}
+
+	document.addEventListener("DOMContentLoaded", () => {
+		// Simpan posisi awal (parent) setiap elemen neutral
+		document.querySelectorAll(".neutral").forEach(neutralBox => {
+			neutralBox.setAttribute("data-original-parent", neutralBox.parentElement.id); // Simpan ID parent asal
+
+			// Tevent listener untuk double click agar kembali ke tempat asalnya
+			neutralBox.addEventListener("dblclick", () => {
+				returnToOriginalPosition(neutralBox);
+			});
+		});
+
+		// atribut data-correct, poin, dan validPlacement untuk setiap slot merah
+		document.querySelectorAll(".red").forEach((redBox, index) => {
+    // Menentukan data-correct satu per satu berdasarkan ID atau urutan kotak merah
+    if (redBox.id === "red17") {
+        redBox.setAttribute("data-correct", "neutral5");
+    } else if (redBox.id === "red18") {
+        redBox.setAttribute("data-correct", "neutral2");
+    } else if (redBox.id === "red19") {
+        redBox.setAttribute("data-correct", "neutral4");
+    } else if (redBox.id === "red20") {
+        redBox.setAttribute("data-correct", "neutral5");
+    } else if (redBox.id === "red21") {
+        redBox.setAttribute("data-correct", "neutral1");
+    } else if (redBox.id === "red22") {
+        redBox.setAttribute("data-correct", "neutral4");
+    } else if (redBox.id === "red23") {
+        redBox.setAttribute("data-correct", "neutral3");
+    } else if (redBox.id === "red24") {
+        redBox.setAttribute("data-correct", "neutral4");
+    } else if (redBox.id === "red25") {
+        redBox.setAttribute("data-correct", "neutral6");
+    } else if (redBox.id === "red26") {
+        redBox.setAttribute("data-correct", "neutral1");
+    } else if (redBox.id === "red27") {
+        redBox.setAttribute("data-correct", "neutral3");
+    } else if (redBox.id === "red28") {
+        redBox.setAttribute("data-correct", "neutral7");
+    } else if (redBox.id === "red29") {
+        redBox.setAttribute("data-correct", "neutral2");
+    } else if (redBox.id === "red30") {
+        redBox.setAttribute("data-correct", "neutral6");
+    } else if (redBox.id === "red31") {
+        redBox.setAttribute("data-correct", "neutral6");
+    } else if (redBox.id === "red32") {
+        redBox.setAttribute("data-correct", "neutral3");
+    }
+    // data-wrong sesuai kebutuhan
+    redBox.setAttribute("data-wrong", "neutral4");  // Contoh untuk data-wrong
+    // Tentukan poin
+    redBox.setAttribute("data-correct-points", "10"); // Poin untuk penempatan yang benar
+    redBox.setAttribute("data-wrong-points", "10");   // Poin untuk penempatan yang salah
+
+
+		});
+
+		// Tambahkan event listener untuk tombol tampilkan skor
+		document.getElementById("show-score-btn").addEventListener("click", showFinalScore);
+		
+		
+	});
+
+	</script>
+	
+
+
